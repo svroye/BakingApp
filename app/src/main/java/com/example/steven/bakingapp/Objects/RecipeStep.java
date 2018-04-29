@@ -1,10 +1,13 @@
 package com.example.steven.bakingapp.Objects;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Steven on 29/04/2018.
  */
 
-public class RecipeStep {
+public class RecipeStep implements Parcelable {
 
     private String shortDescription;
     private String fullDescription;
@@ -18,35 +21,55 @@ public class RecipeStep {
         this.thumbnailUrl = thumbnailUrl;
     }
 
+    protected RecipeStep(Parcel in) {
+        shortDescription = in.readString();
+        fullDescription = in.readString();
+        videoUrl = in.readString();
+        thumbnailUrl = in.readString();
+    }
+
+    public static final Creator<RecipeStep> CREATOR = new Creator<RecipeStep>() {
+        @Override
+        public RecipeStep createFromParcel(Parcel in) {
+            return new RecipeStep(in);
+        }
+
+        @Override
+        public RecipeStep[] newArray(int size) {
+            return new RecipeStep[size];
+        }
+    };
+
     public String getShortDescription() {
         return shortDescription;
     }
 
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
-    }
 
     public String getFullDescription() {
         return fullDescription;
     }
 
-    public void setFullDescription(String fullDescription) {
-        this.fullDescription = fullDescription;
-    }
 
     public String getVideoUrl() {
         return videoUrl;
     }
 
-    public void setVideoUrl(String videoUrl) {
-        this.videoUrl = videoUrl;
-    }
 
     public String getThumbnailUrl() {
         return thumbnailUrl;
     }
 
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(shortDescription);
+        parcel.writeString(fullDescription);
+        parcel.writeString(videoUrl);
+        parcel.writeString(thumbnailUrl);
     }
 }

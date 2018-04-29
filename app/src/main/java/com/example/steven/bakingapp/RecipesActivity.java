@@ -1,5 +1,6 @@
 package com.example.steven.bakingapp;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -52,6 +53,11 @@ public class RecipesActivity extends AppCompatActivity implements RecipesAdapter
 
     @Override
     public void onListItemClick(int position) {
-
+        Intent intentToDetailActivity = new Intent(RecipesActivity.this,
+                RecipeDetailActivity.class);
+        Recipe clickedRecipe = recipes.get(position);
+        Log.d(LOG_TAG, clickedRecipe.getName());
+        intentToDetailActivity.putExtra("recipe", clickedRecipe);
+        startActivity(intentToDetailActivity);
     }
 }
