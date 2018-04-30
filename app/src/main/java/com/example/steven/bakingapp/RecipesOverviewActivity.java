@@ -15,11 +15,12 @@ import com.example.steven.bakingapp.Utils.RecipesJsonUtils;
 
 import java.util.ArrayList;
 
-public class RecipesActivity extends AppCompatActivity implements RecipesAdapter.ListItemClickListener {
+public class RecipesOverviewActivity extends AppCompatActivity implements RecipesAdapter.ListItemClickListener {
 
-    private static final String LOG_TAG = "RecipesActivity";
+    private static final String LOG_TAG = "RecipesOverviewActivity";
     private RecyclerView mRecipesRecyclerView;
     private ArrayList<Recipe> recipes;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +54,13 @@ public class RecipesActivity extends AppCompatActivity implements RecipesAdapter
 
     @Override
     public void onListItemClick(int position) {
-        Intent intentToDetailActivity = new Intent(RecipesActivity.this,
+        // when a recipe is clicked, open the detail activity to display the steps
+        // when on tablet, also the description of each step is shown
+        Intent intentToDetailActivity = new Intent(RecipesOverviewActivity.this,
                 RecipeDetailActivity.class);
         Recipe clickedRecipe = recipes.get(position);
-        Log.d(LOG_TAG, clickedRecipe.getName());
-        intentToDetailActivity.putExtra("recipe", clickedRecipe);
+        // add the clicked recipe to the intent
+        intentToDetailActivity.putExtra(getString(R.string.recipe_key), clickedRecipe);
         startActivity(intentToDetailActivity);
     }
 }

@@ -9,8 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name=".RecipesActivity"
+            android:name=".RecipesOverviewActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,10 +19,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".RecipeDetailActivity"
-            android:parentActivityName=".RecipesActivity">
+            android:parentActivityName=".RecipesOverviewActivity"
+            android:launchMode="singleTop">
         </activity>
+
+        <activity
+            android:name=".RecipeStepActivity"
+            android:parentActivityName=".RecipeDetailActivity">
+        </activity>
+
     </application>
 
 </manifest>
