@@ -31,16 +31,6 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.ListI
     ArrayList<RecipeStep> recipeSteps = new ArrayList<>();
     ArrayList<Ingredient> ingredients = new ArrayList<>();
 
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            recipeSteps = getArguments().getParcelableArrayList(this.getString(R.string.steps_key));
-            ingredients = getArguments().getParcelableArrayList(this.getString(R.string.ingredients_key));
-        }
-    }
-
     public RecipeDetailFragment() {
     }
 
@@ -48,6 +38,11 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.ListI
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe_details, container, false);
+
+        if (getArguments() != null) {
+            recipeSteps = getArguments().getParcelableArrayList(this.getString(R.string.steps_key));
+            ingredients = getArguments().getParcelableArrayList(this.getString(R.string.ingredients_key));
+        }
 
         TextView tv = rootView.findViewById(R.id.recipeDetail_ingredientsTv);
         for (int i = 0; i < ingredients.size(); i++){

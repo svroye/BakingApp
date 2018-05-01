@@ -18,13 +18,6 @@ import com.example.steven.bakingapp.R;
 public class RecipeStepFragment extends Fragment {
 
     private RecipeStep recipeStep;
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            recipeStep = getArguments().getParcelable(getString(R.string.single_step_key));
-        }
-    }
 
     public RecipeStepFragment() {
     }
@@ -33,6 +26,10 @@ public class RecipeStepFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_recipe_step, container, false);
+
+        if (getArguments() != null) {
+            recipeStep = getArguments().getParcelable(getString(R.string.single_step_key));
+        }
 
         TextView stepDescription = rootView.findViewById(R.id.recipeSteps_stepDescription);
         stepDescription.append(recipeStep.getFullDescription());
