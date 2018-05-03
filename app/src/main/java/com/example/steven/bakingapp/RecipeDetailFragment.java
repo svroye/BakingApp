@@ -1,17 +1,17 @@
-package com.example.steven.bakingapp.Fragments;
+package com.example.steven.bakingapp;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.steven.bakingapp.Adapters.StepsAdapter;
 import com.example.steven.bakingapp.Objects.Ingredient;
@@ -27,11 +27,28 @@ import java.util.ArrayList;
 
 public class RecipeDetailFragment extends Fragment implements StepsAdapter.ListItemClickListener{
 
-    // ArrayList holding the steps of the
+    // ArrayList holding the steps
     ArrayList<RecipeStep> recipeSteps = new ArrayList<>();
     ArrayList<Ingredient> ingredients = new ArrayList<>();
 
+    OnListItemClickListener mCallback;
+
     public RecipeDetailFragment() {
+    }
+
+    public interface OnListItemClickListener {
+        void onRecipeStepClickListener(int position);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mCallback = (OnListItemClickListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
     }
 
     @Nullable
@@ -71,9 +88,6 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.ListI
 
     @Override
     public void onListItemClick(int position) {
-        Intent intentToStepActivity = new Intent(getContext(), RecipeStepActivity.class);
-        intentToStepActivity.putExtra(getContext().getString(R.string.single_step_key),
-                recipeSteps.get(position));
-        startActivity(intentToStepActivity);
+        mCallback.onRecipeStepClickListener(position);
     }
 }

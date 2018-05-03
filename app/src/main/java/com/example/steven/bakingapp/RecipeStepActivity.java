@@ -5,12 +5,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.example.steven.bakingapp.Fragments.RecipeStepFragment;
+import com.example.steven.bakingapp.Objects.Recipe;
 import com.example.steven.bakingapp.Objects.RecipeStep;
 
 public class RecipeStepActivity extends AppCompatActivity {
 
-    private RecipeStep recipeStep;
+    private Recipe recipe;
+    private int stepPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,13 +20,17 @@ public class RecipeStepActivity extends AppCompatActivity {
 
         Intent intentThatStartedActivity = getIntent();
         if (intentThatStartedActivity == null) finish();
-        if (intentThatStartedActivity.hasExtra(getString(R.string.single_step_key))) {
-            recipeStep = intentThatStartedActivity.getParcelableExtra(getString(R.string.single_step_key));
+        if (intentThatStartedActivity.hasExtra(getString(R.string.recipe_key))) {
+            recipe = intentThatStartedActivity.getParcelableExtra(getString(R.string.recipe_key));
+            setTitle(recipe.getName());
+        }
+        if (intentThatStartedActivity.hasExtra(getString(R.string.position_key))){
+            stepPosition = intentThatStartedActivity.getIntExtra(getString(R.string.position_key), 0);
         }
 
         RecipeStepFragment fragment = new RecipeStepFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(getString(R.string.single_step_key), recipeStep);
+        bundle.putParcelable(getString(R.string.single_step_key), recipe.getSteps().get(stepPosition));
         fragment.setArguments(bundle);
 
         FragmentManager manager = getSupportFragmentManager();

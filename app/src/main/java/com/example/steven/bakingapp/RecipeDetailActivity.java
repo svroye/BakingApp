@@ -2,15 +2,14 @@ package com.example.steven.bakingapp;
 
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.example.steven.bakingapp.Fragments.RecipeDetailFragment;
 import com.example.steven.bakingapp.Objects.Recipe;
 
-public class RecipeDetailActivity extends AppCompatActivity {
+public class RecipeDetailActivity extends AppCompatActivity
+        implements RecipeDetailFragment.OnListItemClickListener{
 
     private Recipe recipe;
 
@@ -39,5 +38,13 @@ public class RecipeDetailActivity extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .add(R.id.activityDetail_framelayout, recipeDetailFragment)
                 .commit();
+    }
+
+    @Override
+    public void onRecipeStepClickListener(int position) {
+        Intent intentToStepActivity = new Intent(this, RecipeStepActivity.class);
+        intentToStepActivity.putExtra(getString(R.string.recipe_key), recipe);
+        intentToStepActivity.putExtra(getString(R.string.position_key), position);
+        startActivity(intentToStepActivity);
     }
 }
