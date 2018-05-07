@@ -12,6 +12,8 @@
     <string name="ingredients_key" translatable="false">ingredients</string>
     <string name="recipe_key" translatable="false">recipe</string>
     <string name="position_key" translatable="false">position</string>
+    <string name="current_time_exoplayer_key" translatable="false">current_position</string>
+    <string name="recipe_content_key" translatable="false">recipe_content</string>
 
     <string name="ingredient_quantity_measure_float">%1$.2f %2$s %3$s</string>
     <string name="ingredient_quantity_measure_int">%1$d %2$s %3$s</string>

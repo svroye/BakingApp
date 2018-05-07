@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,8 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.ListI
     // ArrayList holding the steps
     ArrayList<RecipeStep> recipeSteps = new ArrayList<>();
     ArrayList<Ingredient> ingredients = new ArrayList<>();
+
+    TextView recipeTv;
 
     OnListItemClickListener mCallback;
 
@@ -61,20 +64,29 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.ListI
             ingredients = getArguments().getParcelableArrayList(this.getString(R.string.ingredients_key));
         }
 
-        TextView tv = rootView.findViewById(R.id.recipeDetail_ingredientsTv);
-        for (int i = 0; i < ingredients.size(); i++){
-            Ingredient ingredient = ingredients.get(i);
-            String ingredientLine;
-            if (ingredient.getQuantity() == Math.floor(ingredient.getQuantity())) {
-                ingredientLine = getString(R.string.ingredient_quantity_measure_int, (int) ingredient.getQuantity(),
-                        ingredient.getMeasure(), ingredient.getName());
-            } else {
-                ingredientLine = getString(R.string.ingredient_quantity_measure_float, ingredient.getQuantity(),
-                        ingredient.getMeasure(), ingredient.getName());
-            }
+        recipeTv = rootView.findViewById(R.id.recipeDetail_ingredientsTv);
 
-            tv.append(ingredientLine + "\n");
+        if (savedInstanceState != null) {
+            Log.d("AAAAAAAA", "got content");
+            recipeTv.setText(savedInstanceState.getString(getString(R.string.recipe_content_key)));
+        } else {
+            Log.d("BBBBBBBB", "NO content");
+            for (int i = 0; i < ingredients.size(); i++){
+                Ingredient ingredient = ingredients.get(i);
+                String ingredientLine;
+                if (ingredient.getQuantity() == Math.floor(ingredient.getQuantity())) {
+                    ingredientLine = getString(R.string.ingredient_quantity_measure_int, (int) ingredient.getQuantity(),
+                            ingredient.getMeasure(), ingredient.getName());
+                } else {
+                    ingredientLine = getString(R.string.ingredient_quantity_measure_float, ingredient.getQuantity(),
+                            ingredient.getMeasure(), ingredient.getName());
+                }
+
+                recipeTv.append(ingredientLine + "\n");
+            }
         }
+
+
 
         RecyclerView rv = rootView.findViewById(R.id.recipeDetail_stepsRv);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(rootView.getContext(),
@@ -89,5 +101,11 @@ public class RecipeDetailFragment extends Fragment implements StepsAdapter.ListI
     @Override
     public void onListItemClick(int position) {
         mCallback.onRecipeStepClickListener(position);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(getString(R.string.recipe_content_key), recipeTv.getText().toString());
     }
 }

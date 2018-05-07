@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.steven.bakingapp.Objects.Recipe;
 
@@ -13,11 +14,21 @@ public class RecipeDetailActivity extends AppCompatActivity
 
     private Recipe recipe;
 
+    private boolean mTwoPane;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
+
+        if (findViewById(R.id.recipeDetail_detailSteps) != null) {
+            mTwoPane = true;
+        } else {
+            mTwoPane = false;
+        }
+
+        Log.d("AAAAAAAAAAAAAA", "TABLET? " + mTwoPane);
 
         Intent intentThatStartedActivity = getIntent();
         if (intentThatStartedActivity == null) finish();
@@ -28,23 +39,38 @@ public class RecipeDetailActivity extends AppCompatActivity
         }
         setTitle(recipe.getName());
 
-        RecipeDetailFragment recipeDetailFragment = new RecipeDetailFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(this.getString(R.string.ingredients_key), recipe.getIngredients());
-        bundle.putParcelableArrayList(this.getString(R.string.steps_key), recipe.getSteps());
-        recipeDetailFragment.setArguments(bundle);
+        if (savedInstanceState == null) {
+            RecipeDetailFragment recipeDetailFragment = new RecipeDetailFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList(this.getString(R.string.ingredients_key), recipe.getIngredients());
+            bundle.putParcelableArrayList(this.getString(R.string.steps_key), recipe.getSteps());
+            recipeDetailFragment.setArguments(bundle);
 
-        fragmentManager.beginTransaction()
-                .add(R.id.activityDetail_framelayout, recipeDetailFragment)
-                .commit();
+            fragmentManager.beginTransaction()
+                    .add(R.id.activityDetail_framelayout, recipeDetailFragment)
+                    .commit();
+        }
+
+
     }
 
     @Override
     public void onRecipeStepClickListener(int position) {
-        Intent intentToStepActivity = new Intent(this, RecipeStepActivity.class);
-        intentToStepActivity.putExtra(getString(R.string.recipe_key), recipe);
-        intentToStepActivity.putExtra(getString(R.string.position_key), position);
-        startActivity(intentToStepActivity);
+        if (mTwoPane){
+             RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
+             FragmentManager fragmentManager = getSupportFragmentManager();
+             Bundle bundle = new Bundle();
+             bundle.putParcelable(getString(R.string.single_step_key), recipe.getSteps().get(position));
+             recipeStepFragment.setArguments(bundle);
+             fragmentManager.beginTransaction()
+                     .replace(R.id.recipeDetail_detailSteps, recipeStepFragment)
+                     .commit();
+        } else {
+            Intent intentToStepActivity = new Intent(this, RecipeStepActivity.class);
+            intentToStepActivity.putExtra(getString(R.string.recipe_key), recipe);
+            intentToStepActivity.putExtra(getString(R.string.position_key), position);
+            startActivity(intentToStepActivity);
+        }
     }
 }

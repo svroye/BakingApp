@@ -1,4 +1,4 @@
-package com.example.steven.bakingapp.Fragments;
+package com.example.steven.bakingapp;
 
 import android.content.Context;
 import android.media.MediaDataSource;
@@ -61,6 +61,11 @@ public class RecipeStepFragment extends Fragment {
         initializePlayer();
         TextView stepDescription = rootView.findViewById(R.id.recipeSteps_stepDescription);
         stepDescription.append(recipeStep.getFullDescription());
+
+        if (savedInstanceState != null) {
+            simpleExoPlayer.seekTo(savedInstanceState.getLong(getContext().getString(R.string.current_time_exoplayer_key)));
+        }
+
         return rootView;
 
     }
@@ -89,8 +94,6 @@ public class RecipeStepFragment extends Fragment {
         Uri uri = Uri.parse(recipeStep.getVideoUrl());
 
         MediaSource mediaSource = null;
-        Log.d("AAAAAAAAAAAAAAAAA", (recipeStep.getVideoUrl().length() != 0) + "");
-        Log.d("AAAAAAAAAAAAAAAAA", (recipeStep.getThumbnailUrl().length() != 0) + "");
         if (uri != null) {
             mediaSource = new ExtractorMediaSource(uri,
                     mediaDataSourceFactory, extractorsFactory, null, null);
@@ -103,6 +106,18 @@ public class RecipeStepFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        releasePlayer();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(getContext().getString(R.string.current_time_exoplayer_key),
+                simpleExoPlayer.getCurrentPosition());
+        releasePlayer();
+    }
+
+    private void releasePlayer(){
         simpleExoPlayer.release();
     }
 }
