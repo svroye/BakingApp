@@ -59,6 +59,16 @@ public class RecipeStep implements Parcelable {
         return thumbnailUrl;
     }
 
+    public String getUrlToVideo(){
+        if (!videoUrl.equals("")){
+            return videoUrl;
+        } else if (!thumbnailUrl.equals("")){
+            return thumbnailUrl;
+        } else {
+            return null;
+        }
+    }
+
 
     @Override
     public int describeContents() {

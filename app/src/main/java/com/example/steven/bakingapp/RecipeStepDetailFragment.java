@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,23 +78,20 @@ public class RecipeStepDetailFragment extends Fragment {
                 Util.getUserAgent(getContext(), "BakingApp"),
                                     (TransferListener<? super DataSource>) bandwidthMeter);
 
-
         TrackSelection.Factory videoTrackSelectionFactory =
                 new AdaptiveVideoTrackSelection.Factory(bandwidthMeter);
 
         TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
+
         simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
-
         simpleExoPlayerView.setPlayer(simpleExoPlayer);
-
         simpleExoPlayer.setPlayWhenReady(playWhenReady);
 
         DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-        Uri uri = Uri.parse(recipeStep.getVideoUrl());
 
-        MediaSource mediaSource = null;
-        if (uri != null) {
-            mediaSource = new ExtractorMediaSource(uri,
+        String videoUriString = recipeStep.getUrlToVideo();
+        if (videoUriString != null) {
+            MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(videoUriString),
                     mediaDataSourceFactory, extractorsFactory, null, null);
             simpleExoPlayer.prepare(mediaSource);
         } else {
