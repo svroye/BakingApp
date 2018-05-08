@@ -19,9 +19,10 @@ import java.util.ArrayList;
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHolder> {
 
     private ArrayList<RecipeStep> steps;
-    public ListItemClickListener listener;
+    private ListItemClickListener listener;
     private Context context;
 
+    // interface for handling onClick of the list items
     public interface ListItemClickListener {
         void onListItemClick(int position);
     }
@@ -31,7 +32,6 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
         this.listener = listener;
         this.context = context;
     }
-
 
     @Override
     public StepsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

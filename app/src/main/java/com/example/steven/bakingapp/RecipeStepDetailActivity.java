@@ -6,9 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.steven.bakingapp.Objects.Recipe;
-import com.example.steven.bakingapp.Objects.RecipeStep;
 
-public class RecipeStepActivity extends AppCompatActivity {
+public class RecipeStepDetailActivity extends AppCompatActivity {
 
     private Recipe recipe;
     private int stepPosition;
@@ -28,7 +27,7 @@ public class RecipeStepActivity extends AppCompatActivity {
             stepPosition = intentThatStartedActivity.getIntExtra(getString(R.string.position_key), 0);
         }
 
-        RecipeStepFragment fragment = new RecipeStepFragment();
+        RecipeStepDetailFragment fragment = new RecipeStepDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(getString(R.string.single_step_key), recipe.getSteps().get(stepPosition));
         fragment.setArguments(bundle);

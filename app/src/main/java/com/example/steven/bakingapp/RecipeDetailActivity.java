@@ -2,7 +2,6 @@ package com.example.steven.bakingapp;
 
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,7 +9,7 @@ import android.util.Log;
 import com.example.steven.bakingapp.Objects.Recipe;
 
 public class RecipeDetailActivity extends AppCompatActivity
-        implements RecipeDetailFragment.OnListItemClickListener{
+        implements RecipeStepsFragment.OnListItemClickListener{
 
     private Recipe recipe;
 
@@ -22,13 +21,11 @@ public class RecipeDetailActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_detail);
 
-        if (findViewById(R.id.recipeDetail_detailSteps) != null) {
+        if (findViewById(R.id.activityRecipeDetail_detailStepFramelayout) != null) {
             mTwoPane = true;
         } else {
             mTwoPane = false;
         }
-
-        Log.d("AAAAAAAAAAAAAA", "TABLET? " + mTwoPane);
 
         Intent intentThatStartedActivity = getIntent();
         if (intentThatStartedActivity == null) finish();
@@ -40,34 +37,45 @@ public class RecipeDetailActivity extends AppCompatActivity
         setTitle(recipe.getName());
 
         if (savedInstanceState == null) {
-            RecipeDetailFragment recipeDetailFragment = new RecipeDetailFragment();
+            // get the FragmentManager
             FragmentManager fragmentManager = getSupportFragmentManager();
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList(this.getString(R.string.ingredients_key), recipe.getIngredients());
-            bundle.putParcelableArrayList(this.getString(R.string.steps_key), recipe.getSteps());
-            recipeDetailFragment.setArguments(bundle);
 
+            // create an instance of the RecipeIngredientsFragment and add a Bundle with the
+            //  ingredients
+            RecipeIngredientsFragment ingredientsFragment = new RecipeIngredientsFragment();
+            Bundle ingredientsBundle = new Bundle();
+            ingredientsBundle.putParcelableArrayList(getString(R.string.ingredients_key),
+                    recipe.getIngredients());
+            ingredientsFragment.setArguments(ingredientsBundle);
+
+            // create an instance of the RecipeStepsFragment and add a Bundle with the steps
+            RecipeStepsFragment recipeStepsFragment = new RecipeStepsFragment();
+            Bundle stepsBundle = new Bundle();
+            stepsBundle.putParcelableArrayList(getString(R.string.steps_key), recipe.getSteps());
+            recipeStepsFragment.setArguments(stepsBundle);
+
+            // add both fragments to the UI
             fragmentManager.beginTransaction()
-                    .add(R.id.activityDetail_framelayout, recipeDetailFragment)
+                    .add(R.id.activityRecipeDetail_ingredientsFramelayout, ingredientsFragment)
+                    .add(R.id.activityRecipeDetail_stepsFramelayout, recipeStepsFragment)
                     .commit();
         }
-
 
     }
 
     @Override
     public void onRecipeStepClickListener(int position) {
         if (mTwoPane){
-             RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
+             RecipeStepDetailFragment recipeStepDetailFragment = new RecipeStepDetailFragment();
              FragmentManager fragmentManager = getSupportFragmentManager();
              Bundle bundle = new Bundle();
              bundle.putParcelable(getString(R.string.single_step_key), recipe.getSteps().get(position));
-             recipeStepFragment.setArguments(bundle);
+             recipeStepDetailFragment.setArguments(bundle);
              fragmentManager.beginTransaction()
-                     .replace(R.id.recipeDetail_detailSteps, recipeStepFragment)
+                     .replace(R.id.activityRecipeDetail_detailStepFramelayout, recipeStepDetailFragment)
                      .commit();
         } else {
-            Intent intentToStepActivity = new Intent(this, RecipeStepActivity.class);
+            Intent intentToStepActivity = new Intent(this, RecipeStepDetailActivity.class);
             intentToStepActivity.putExtra(getString(R.string.recipe_key), recipe);
             intentToStepActivity.putExtra(getString(R.string.position_key), position);
             startActivity(intentToStepActivity);
