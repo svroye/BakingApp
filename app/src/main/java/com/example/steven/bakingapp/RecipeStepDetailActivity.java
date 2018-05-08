@@ -14,6 +14,8 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_step);
 
@@ -23,20 +25,23 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
             recipe = intentThatStartedActivity.getParcelableExtra(getString(R.string.recipe_key));
             setTitle(recipe.getName());
         }
+
         if (intentThatStartedActivity.hasExtra(getString(R.string.position_key))){
             stepPosition = intentThatStartedActivity.getIntExtra(getString(R.string.position_key), 0);
         }
 
-        RecipeStepDetailFragment fragment = new RecipeStepDetailFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(getString(R.string.single_step_key), recipe.getSteps().get(stepPosition));
-        fragment.setArguments(bundle);
+        if (savedInstanceState == null) {
+            RecipeStepDetailFragment fragment = new RecipeStepDetailFragment();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(getString(R.string.single_step_key), recipe.getSteps().get(stepPosition));
+            fragment.setArguments(bundle);
 
-        FragmentManager manager = getSupportFragmentManager();
+            FragmentManager manager = getSupportFragmentManager();
 
-        manager.beginTransaction()
-                .add(R.id.recipeStep_frameLayout, fragment)
-                .commit();
+            manager.beginTransaction()
+                    .add(R.id.recipeStep_frameLayout, fragment)
+                    .commit();
+        }
     }
 
 

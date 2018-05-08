@@ -42,6 +42,8 @@ public class RecipeStepDetailFragment extends Fragment {
     private SimpleExoPlayer simpleExoPlayer;
 
     private boolean playWhenReady = true;
+    private long playbackPosition = 0;
+    private int currentWindow = 0;
 
     public RecipeStepDetailFragment() {
     }
@@ -55,14 +57,19 @@ public class RecipeStepDetailFragment extends Fragment {
             recipeStep = getArguments().getParcelable(getString(R.string.single_step_key));
         }
 
+        if (savedInstanceState != null) {
+            playWhenReady = savedInstanceState.getBoolean("playWhenReady");
+            playbackPosition = savedInstanceState.getLong("playbackPosition");
+            currentWindow = savedInstanceState.getInt("currentWindow");
+        }
+        Log.d("AAAAAAAAAA", currentWindow + " currentWindow");
+        Log.d("AAAAAAAAAA", playbackPosition + " playbackposition");
+
+
         simpleExoPlayerView = rootView.findViewById(R.id.recipeSteps_moviePlayer);
         initializePlayer();
         TextView stepDescription = rootView.findViewById(R.id.recipeSteps_stepDescription);
         stepDescription.append(recipeStep.getFullDescription());
-
-        if (savedInstanceState != null) {
-            simpleExoPlayer.seekTo(savedInstanceState.getLong(getContext().getString(R.string.current_time_exoplayer_key)));
-        }
 
         return rootView;
 
@@ -88,7 +95,6 @@ public class RecipeStepDetailFragment extends Fragment {
         simpleExoPlayer.setPlayWhenReady(playWhenReady);
 
         DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-
         String videoUriString = recipeStep.getUrlToVideo();
         if (videoUriString != null) {
             MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(videoUriString),
@@ -97,6 +103,7 @@ public class RecipeStepDetailFragment extends Fragment {
         } else {
             simpleExoPlayerView.setVisibility(View.GONE);
         }
+        simpleExoPlayer.seekTo(currentWindow, playbackPosition);
     }
 
     @Override
@@ -105,15 +112,18 @@ public class RecipeStepDetailFragment extends Fragment {
         releasePlayer();
     }
 
+    private void releasePlayer(){
+        if (simpleExoPlayer != null) {
+            simpleExoPlayer.release();
+            simpleExoPlayer = null;
+        }
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(getContext().getString(R.string.current_time_exoplayer_key),
-                simpleExoPlayer.getCurrentPosition());
-        releasePlayer();
-    }
-
-    private void releasePlayer(){
-        simpleExoPlayer.release();
+        outState.putLong("playbackPosition", simpleExoPlayer.getCurrentPosition());
+        outState.putInt("currentWindow", simpleExoPlayer.getCurrentWindowIndex());
+        outState.putBoolean("playWhenReady", simpleExoPlayer.getPlayWhenReady());
     }
 }
