@@ -102,6 +102,7 @@ public class RecipesJsonUtils {
                         String fullDescription = null;
                         String videoURL = null;
                         String thumbnailURL = null;
+                        int id = -1;
 
                         if (stepsJSON.has("shortDescription")){
                             shortDescription = stepsJSON.getString("shortDescription");
@@ -119,8 +120,12 @@ public class RecipesJsonUtils {
                             thumbnailURL = stepsJSON.getString("thumbnailURL");
                         }
 
+                        if (stepsJSON.has("id")){
+                            id = stepsJSON.getInt("id");
+                        }
+
                         steps.add(new RecipeStep(shortDescription, fullDescription,
-                                videoURL, thumbnailURL));
+                                videoURL, thumbnailURL, id));
                     }
                 }
 

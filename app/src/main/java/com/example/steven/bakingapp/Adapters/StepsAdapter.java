@@ -28,6 +28,9 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
     }
 
     public StepsAdapter(ArrayList<RecipeStep> steps, ListItemClickListener listener, Context context) {
+        if (steps.get(0).getId() == 0){
+            steps.remove(0);
+        }
         this.steps = steps;
         this.listener = listener;
         this.context = context;
@@ -44,7 +47,7 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
     @Override
     public void onBindViewHolder(StepsViewHolder holder, int position) {
         RecipeStep currentStep = steps.get(position);
-        holder.stepNumberTv.setText(context.getString(R.string.single_step_item, position,
+        holder.stepNumberTv.setText(context.getString(R.string.single_step_item, currentStep.getId(),
                 currentStep.getShortDescription()));
     }
 

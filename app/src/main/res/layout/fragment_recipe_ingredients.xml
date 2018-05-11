@@ -7,16 +7,23 @@
     android:padding="8dp">
 
     <TextView
+        android:text="@string/ingredients_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/ingredients_header"
         android:textAllCaps="true"
         android:textSize="16sp"
         android:textStyle="bold"/>
 
+
     <TextView
         android:id="@+id/fragmentRecipeIngredients_ingredientsTv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="4dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
 
 </LinearLayout>

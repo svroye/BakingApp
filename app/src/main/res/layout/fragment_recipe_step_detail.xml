@@ -10,17 +10,15 @@
     android:orientation="vertical"
     tools:context="com.example.steven.bakingapp.RecipeStepDetailActivity">
 
-    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-        android:id="@+id/recipeSteps_moviePlayer"
+    <include
+        layout="@layout/fragment_exoplayer"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:adjustViewBounds="true" />
+        android:layout_height="200dp"/>
+
 
     <TextView
         android:id="@+id/recipeSteps_stepDescription"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>
