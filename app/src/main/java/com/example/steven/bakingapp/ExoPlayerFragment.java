@@ -36,6 +36,7 @@ public class ExoPlayerFragment extends Fragment {
     private boolean playWhenReady = false;
     private long playbackPosition = 0;
     private int currentWindow = 0;
+    private boolean isTablet;
 
     public ExoPlayerFragment() {
     }
@@ -47,19 +48,20 @@ public class ExoPlayerFragment extends Fragment {
 
         if (getArguments() != null){
             recipeStep = getArguments().getParcelable(getString(R.string.single_step_key));
+            isTablet = getArguments().getBoolean("isTablet");
         }
 
         if (savedInstanceState != null) {
             playWhenReady = savedInstanceState.getBoolean("playWhenReady");
             playbackPosition = savedInstanceState.getLong("playbackPosition");
             currentWindow = savedInstanceState.getInt("currentWindow");
+            isTablet = savedInstanceState.getBoolean("isTablet");
         }
 
         simpleExoPlayerView = rootView.findViewById(R.id.fragmentExoplayer_moviePlayer);
         simpleExoPlayer = ExoPlayerUtils.initializePlayer(getContext(), simpleExoPlayerView,
                 playWhenReady, recipeStep.getUrlToVideo(), currentWindow, playbackPosition);
-
-        setInitialOrientation();
+        ExoPlayerUtils.setInitialOrientation(getContext(), getActivity(), isTablet);
         return rootView;
     }
 
@@ -89,20 +91,7 @@ public class ExoPlayerFragment extends Fragment {
         outState.putLong("playbackPosition", simpleExoPlayer.getCurrentPosition());
         outState.putInt("currentWindow", simpleExoPlayer.getCurrentWindowIndex());
         outState.putBoolean("playWhenReady", simpleExoPlayer.getPlayWhenReady());
-    }
-
-    private void setInitialOrientation(){
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            hideSystemUI();
-        } else {
-        }
-    }
-
-    private void hideSystemUI(){
-        getActivity().getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        outState.putBoolean("isTablet", isTablet);
     }
 
 }

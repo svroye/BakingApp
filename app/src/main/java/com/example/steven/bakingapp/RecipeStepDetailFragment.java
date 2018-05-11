@@ -38,12 +38,8 @@ import com.google.android.exoplayer2.util.Util;
 public class RecipeStepDetailFragment extends Fragment {
 
     private RecipeStep recipeStep;
-    private SimpleExoPlayerView simpleExoPlayerView;
     private SimpleExoPlayer simpleExoPlayer;
-
-    private boolean playWhenReady = true;
-    private long playbackPosition = 0;
-    private int currentWindow = 0;
+    private SimpleExoPlayerView simpleExoPlayerView;
 
     public RecipeStepDetailFragment() {
     }
@@ -57,73 +53,12 @@ public class RecipeStepDetailFragment extends Fragment {
             recipeStep = getArguments().getParcelable(getString(R.string.single_step_key));
         }
 
-        if (savedInstanceState != null) {
-            playWhenReady = savedInstanceState.getBoolean("playWhenReady");
-            playbackPosition = savedInstanceState.getLong("playbackPosition");
-            currentWindow = savedInstanceState.getInt("currentWindow");
-        }
-        Log.d("AAAAAAAAAA", currentWindow + " currentWindow");
-        Log.d("AAAAAAAAAA", playbackPosition + " playbackposition");
-
-
-        simpleExoPlayerView = rootView.findViewById(R.id.recipeSteps_moviePlayer);
-        initializePlayer();
+        simpleExoPlayerView = rootView.findViewById(R.id.fragmentExoplayer_moviePlayer);
         TextView stepDescription = rootView.findViewById(R.id.recipeSteps_stepDescription);
+
         stepDescription.append(recipeStep.getFullDescription());
 
         return rootView;
-
     }
 
-    // https://github.com/ayalus/ExoPlayer-2-Example/blob/master/ExoPlayer2Example/app/src/main/AndroidManifest.xml
-    // https://android.jlelse.eu/android-exoplayer-starters-guide-6350433f256c
-    public void initializePlayer() {
-
-        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-        LoadControl loadControl = new DefaultLoadControl();
-        DataSource.Factory mediaDataSourceFactory = new DefaultDataSourceFactory(getContext(),
-                Util.getUserAgent(getContext(), "BakingApp"),
-                                    (TransferListener<? super DataSource>) bandwidthMeter);
-
-        TrackSelection.Factory videoTrackSelectionFactory =
-                new AdaptiveVideoTrackSelection.Factory(bandwidthMeter);
-
-        TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
-
-        simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
-        simpleExoPlayerView.setPlayer(simpleExoPlayer);
-        simpleExoPlayer.setPlayWhenReady(playWhenReady);
-
-        DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-        String videoUriString = recipeStep.getUrlToVideo();
-        if (videoUriString != null) {
-            MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(videoUriString),
-                    mediaDataSourceFactory, extractorsFactory, null, null);
-            simpleExoPlayer.prepare(mediaSource);
-        } else {
-            simpleExoPlayerView.setVisibility(View.GONE);
-        }
-        simpleExoPlayer.seekTo(currentWindow, playbackPosition);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        releasePlayer();
-    }
-
-    private void releasePlayer(){
-        if (simpleExoPlayer != null) {
-            simpleExoPlayer.release();
-            simpleExoPlayer = null;
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putLong("playbackPosition", simpleExoPlayer.getCurrentPosition());
-        outState.putInt("currentWindow", simpleExoPlayer.getCurrentWindowIndex());
-        outState.putBoolean("playWhenReady", simpleExoPlayer.getPlayWhenReady());
-    }
 }

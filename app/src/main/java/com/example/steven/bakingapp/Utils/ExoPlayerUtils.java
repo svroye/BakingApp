@@ -1,6 +1,8 @@
 package com.example.steven.bakingapp.Utils;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.view.View;
 
@@ -67,6 +69,22 @@ public class ExoPlayerUtils {
             simpleExoPlayer.stop();
             simpleExoPlayer.release();
         }
+    }
+
+    public static void setInitialOrientation(Context context, Activity activity, boolean isTablet){
+        if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
+                && !isTablet) {
+            hideSystemUI(activity);
+        } else {
+
+        }
+    }
+
+    private static void hideSystemUI(Activity activity){
+        activity.getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
     }
 
 
