@@ -1,5 +1,7 @@
 package com.example.steven.bakingapp;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +9,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.example.steven.bakingapp.Objects.Recipe;
+import com.example.steven.bakingapp.Widget.RecipeWidget;
 
 public class RecipeDetailActivity extends AppCompatActivity
         implements RecipeStepsFragment.OnListItemClickListener{
@@ -84,6 +87,17 @@ public class RecipeDetailActivity extends AppCompatActivity
         } else {
             recipeStepDescriptionTv.setText(savedInstanceState.getString("recipeStep"));
         }
+
+        updateWidget();
+    }
+
+    private void updateWidget() {
+        Intent intent = new Intent();
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        //int[] ids = AppWidgetManager.getInstance(getApplicationContext()).getAppWidgetIds(
+          //      new ComponentName(getApplicationContext(), RecipeWidget.class));
+        intent.putExtra("recipe", recipe);
+        sendBroadcast(intent);
     }
 
     @Override
