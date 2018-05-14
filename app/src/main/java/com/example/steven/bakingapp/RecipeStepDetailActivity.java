@@ -42,7 +42,7 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
             stepDescriptionTv.setText(recipeStep.getFullDescription());
 
             if (recipeStep.getUrlToVideo() != null) {
-
+                // step contains a video url or thumbnail url, so the ExoPlayer can be created
                 ExoPlayerFragment exoPlayerFragment = new ExoPlayerFragment();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(getString(R.string.single_step_key), recipeStep);
@@ -52,6 +52,7 @@ public class RecipeStepDetailActivity extends AppCompatActivity {
                         .add(R.id.recipeStep_frameLayout, exoPlayerFragment)
                         .commit();
             } else {
+                // no video, so hide the Exoplayer
                 findViewById(R.id.recipeStep_frameLayout).setVisibility(View.GONE);
             }
 

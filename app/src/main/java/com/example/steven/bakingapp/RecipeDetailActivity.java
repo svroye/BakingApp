@@ -1,7 +1,6 @@
 package com.example.steven.bakingapp;
 
 import android.appwidget.AppWidgetManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -13,6 +12,10 @@ import android.widget.TextView;
 import com.example.steven.bakingapp.Objects.Recipe;
 import com.google.gson.Gson;
 
+/**
+ * Activity showing the details of recipe. This includes the Introductory video, ingredients and steps
+ * For tablet, this also holds the navigation between steps by using the Master Detail layout structure.
+ */
 public class RecipeDetailActivity extends AppCompatActivity
         implements RecipeStepsFragment.OnListItemClickListener{
 
@@ -72,6 +75,7 @@ public class RecipeDetailActivity extends AppCompatActivity
             recipeStepsFragment.setArguments(stepsBundle);
 
             if (mTwoPane){
+                // tablet view
                 fragmentManager.beginTransaction()
                         .add(R.id.activityRecipeDetail_detailStepFramelayout, exoPlayerFragment)
                         .add(R.id.activityRecipeDetail_ingredientsFramelayout, ingredientsFragment)
@@ -79,6 +83,7 @@ public class RecipeDetailActivity extends AppCompatActivity
                         .commit();
                 recipeStepDescriptionTv.setText(recipe.getSteps().get(0).getFullDescription());
             } else {
+                // phone view
                 fragmentManager.beginTransaction()
                         .add(R.id.activityRecipeDetail_recipeIntroFramelayout, exoPlayerFragment)
                         .add(R.id.activityRecipeDetail_ingredientsFramelayout, ingredientsFragment)
@@ -88,20 +93,30 @@ public class RecipeDetailActivity extends AppCompatActivity
 
         } else {
             if (mTwoPane) {
+                // only for the tablet the text needs to be saved; for phone, this is present on a
+                // different activity
                 recipeStepDescriptionTv.setText(savedInstanceState.getString("recipeStep"));
             }
         }
 
+        // update Preferences to save the currently selected recipe and send broadcast for updating
+        // the widget
         updateSharedPreferences();
         sendBroadcast();
     }
 
+    /**
+     * Send broadcast for updating widget
+     */
     private void sendBroadcast() {
         Intent intent = new Intent();
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         sendBroadcast(intent);
     }
 
+    /**
+     * update shared preferences file with the newly selected recipe
+     */
     private void updateSharedPreferences() {
         // transform the Recipe object to a String using GSon
         Gson gson = new Gson();
@@ -116,20 +131,26 @@ public class RecipeDetailActivity extends AppCompatActivity
     @Override
     public void onRecipeStepClickListener(int position) {
         if (mTwoPane){
+            // tablet view
             // create an new instance of the ExoplayerFragment and add a Bundle with the
-            //  RecipeStep
+            //   and boolean specifying tablet or phone view
             ExoPlayerFragment exoPlayerFragment = new ExoPlayerFragment();
             Bundle recipeIntroBundle = new Bundle();
             recipeIntroBundle.putParcelable(getString(R.string.single_step_key),
                     recipe.getSteps().get(position));
             recipeIntroBundle.putBoolean("isTablet", mTwoPane);
             exoPlayerFragment.setArguments(recipeIntroBundle);
+            // replace the old fragment with the newly selected step
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.activityRecipeDetail_detailStepFramelayout, exoPlayerFragment)
                     .commit();
+            // set the text for the current step
             recipeStepDescriptionTv.setText(recipe.getSteps().get(position).getFullDescription());
 
         } else {
+            // phone view
+            // open the step detail activity
+            // add the recipe and the position of the step which was selected
             Intent intentToStepActivity = new Intent(this, RecipeStepDetailActivity.class);
             intentToStepActivity.putExtra(getString(R.string.recipe_key), recipe);
             intentToStepActivity.putExtra(getString(R.string.position_key), position);
@@ -141,6 +162,7 @@ public class RecipeDetailActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mTwoPane) {
+            // only save the text for tablet
             outState.putString("recipeStep", recipeStepDescriptionTv.getText().toString());
         }
     }

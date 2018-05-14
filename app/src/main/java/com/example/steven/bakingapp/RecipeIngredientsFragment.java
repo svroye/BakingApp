@@ -13,7 +13,7 @@ import com.example.steven.bakingapp.Objects.Ingredient;
 import java.util.ArrayList;
 
 /**
- * Created by Steven on 8/05/2018.
+ * Fragment showing the ingredients for a selected recipe.
  */
 
 public class RecipeIngredientsFragment extends Fragment {
@@ -52,6 +52,7 @@ public class RecipeIngredientsFragment extends Fragment {
             // is an integer or a double, in order to know how to display it
             for (Ingredient ingredient : recipeIngredients) {
                 String ingredientLine;
+                // set the correct string format depending on integer or double value for the quantity
                 if (ingredient.getQuantity() == Math.floor(ingredient.getQuantity())) {
                     ingredientLine = getString(R.string.ingredient_quantity_measure_int, (int) ingredient.getQuantity(),
                             ingredient.getMeasure(), ingredient.getName());
@@ -59,7 +60,7 @@ public class RecipeIngredientsFragment extends Fragment {
                     ingredientLine = getString(R.string.ingredient_quantity_measure_float, ingredient.getQuantity(),
                             ingredient.getMeasure(), ingredient.getName());
                 }
-
+                // add new line after each ingredient
                 recipeTv.append(ingredientLine + "\n");
             }
         }

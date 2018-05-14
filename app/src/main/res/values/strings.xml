@@ -22,5 +22,7 @@
     <string name="widget_content_empty_state">Select one of the recipes in \'Baking App\' to see the
         list of ingredients here."</string>
 
+    <string name="sp_recipe_key" translatable="false">recipekey</string>
+
 
 </resources>

@@ -9,27 +9,28 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-
 import com.example.steven.bakingapp.Adapters.RecipesAdapter;
 import com.example.steven.bakingapp.Objects.Recipe;
 import com.example.steven.bakingapp.Utils.NetworkUtils;
-import com.example.steven.bakingapp.Utils.RecipesJsonUtils;
-
 import java.util.ArrayList;
 
+/**
+ * Main entry point of the application. Displays a list of recipes.
+ */
 public class RecipesOverviewActivity extends AppCompatActivity
         implements RecipesAdapter.ListItemClickListener {
 
-    private static final String LOG_TAG = "RecipesOverviewActivity";
+    // RecyclerView for displaying the individual recipes
     private RecyclerView mRecipesRecyclerView;
+    // ArrayList holding the recipes
     private ArrayList<Recipe> recipes;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipes);
 
+        // find reference th RecyclerView
         mRecipesRecyclerView = findViewById(R.id.activityRecipes_recyclerView);
 
         // set attributes for the recycler view
@@ -47,12 +48,8 @@ public class RecipesOverviewActivity extends AppCompatActivity
 
         mRecipesRecyclerView.setLayoutManager(layoutManager);
 
+        // perform the AsyncTask to fetch the Recipes from a network request
         (new FetchRecipesTask()).execute();
-
-        RecipesAdapter adapter = new RecipesAdapter(recipes, this);
-
-        mRecipesRecyclerView.setAdapter(adapter);
-
     }
 
     @Override
@@ -72,6 +69,7 @@ public class RecipesOverviewActivity extends AppCompatActivity
 
         @Override
         protected ArrayList<Recipe> doInBackground(Void... voids) {
+            // get the recipes from a network request; store them in an ArrayList
             recipes = NetworkUtils.getRecipes(RecipesOverviewActivity.this);
             return recipes;
         }
@@ -79,9 +77,8 @@ public class RecipesOverviewActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(ArrayList<Recipe> recipes) {
             super.onPostExecute(recipes);
-            Log.d("MAINN", "REC " + recipes.size());
+            // create a new adapter with the recipes and set them to the RecyclerView
             RecipesAdapter adapter = new RecipesAdapter(recipes, RecipesOverviewActivity.this);
-
             mRecipesRecyclerView.setAdapter(adapter);
         }
     }

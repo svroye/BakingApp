@@ -31,7 +31,6 @@ public class RecipeWidget extends AppWidgetProvider {
     public void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-        Log.d("RecipeWidget", "Inside updateAppWidget");
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_view);
         // set the intent for launching the service that updates the ListView
@@ -43,15 +42,19 @@ public class RecipeWidget extends AppWidgetProvider {
         views.setRemoteAdapter(R.id.widget_list_view, serviceIntent);
         views.setEmptyView(R.id.widget_list_view, R.id.widget_empty_view);
 
+        // get the recipe stored in the SharedPreferences, if any
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String recipeString = preferences.getString("recipekey", "");
+        String recipeString = preferences.getString(context.getString(R.string.sp_recipe_key), "");
         if (recipeString.equals("")) {
+            // no recipe stored, set the empty view for the widget
             views.setTextViewText(R.id.widget_recipeName, context.getString(R.string.widget_title_empty_state));
+            // set intent to open RecipeOverview activity
             Intent activityIntent = new Intent(context, RecipesOverviewActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
                     activityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setOnClickPendingIntent(R.id.widget_layout, pendingIntent);
         } else {
+            // transform the recipe string back to a Recipe object
             Gson gson = new Gson();
             Recipe recipe = gson.fromJson(recipeString, new TypeToken<Recipe>() {
             }.getType());
@@ -63,8 +66,6 @@ public class RecipeWidget extends AppWidgetProvider {
                     .addNextIntentWithParentStack(activityIntent)
                     .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setOnClickPendingIntent(R.id.widget_layout, p);
-
-            Log.d("WIDGETTT", "Calling notify data changed");
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_list_view);
         }
 
@@ -74,10 +75,10 @@ public class RecipeWidget extends AppWidgetProvider {
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
-        Log.d("RECIPEWIDGET", "INSIDE ONUPDATE");
 
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
@@ -95,10 +96,12 @@ public class RecipeWidget extends AppWidgetProvider {
         // Enter relevant functionality for when the last widget is disabled
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        Log.d("RECIPEWIDGET--", "INSIDE ONRECEIVE");
+        // update the widget when a broadcast is received. This happens when the user selects a new
+        // recipe in the list
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context.getApplicationContext());
         ComponentName thisAppWidget = new ComponentName(context.getApplicationContext(), RecipeWidget.class);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
