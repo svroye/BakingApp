@@ -1,12 +1,15 @@
 package com.example.steven.bakingapp.Objects;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**
  * Created by Steven on 29/04/2018.
  */
 
-public class Recipe {
+public class Recipe implements Parcelable {
 
     private String name;
     private ArrayList<Ingredient> ingredients;
@@ -18,27 +21,48 @@ public class Recipe {
         this.steps = steps;
     }
 
-    public String getName() {
-        return name;
+    protected Recipe(Parcel in) {
+        name = in.readString();
+        ingredients = in.createTypedArrayList(Ingredient.CREATOR);
+        steps = in.createTypedArrayList(RecipeStep.CREATOR);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeTypedList(ingredients);
+        dest.writeTypedList(steps);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
+        @Override
+        public Recipe createFromParcel(Parcel in) {
+            return new Recipe(in);
+        }
+
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[size];
+        }
+    };
+
+    public String getName() {
+        return name;
     }
 
     public ArrayList<Ingredient> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(ArrayList<Ingredient> ingredients) {
-        this.ingredients = ingredients;
-    }
-
     public ArrayList<RecipeStep> getSteps() {
         return steps;
     }
 
-    public void setSteps(ArrayList<RecipeStep> steps) {
-        this.steps = steps;
-    }
+
+
 }
