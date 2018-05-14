@@ -2,6 +2,7 @@ package com.example.steven.bakingapp;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,11 +12,13 @@ import android.util.Log;
 
 import com.example.steven.bakingapp.Adapters.RecipesAdapter;
 import com.example.steven.bakingapp.Objects.Recipe;
+import com.example.steven.bakingapp.Utils.NetworkUtils;
 import com.example.steven.bakingapp.Utils.RecipesJsonUtils;
 
 import java.util.ArrayList;
 
-public class RecipesOverviewActivity extends AppCompatActivity implements RecipesAdapter.ListItemClickListener {
+public class RecipesOverviewActivity extends AppCompatActivity
+        implements RecipesAdapter.ListItemClickListener {
 
     private static final String LOG_TAG = "RecipesOverviewActivity";
     private RecyclerView mRecipesRecyclerView;
@@ -44,7 +47,7 @@ public class RecipesOverviewActivity extends AppCompatActivity implements Recipe
 
         mRecipesRecyclerView.setLayoutManager(layoutManager);
 
-        recipes = RecipesJsonUtils.getRecipes(this);
+        (new FetchRecipesTask()).execute();
 
         RecipesAdapter adapter = new RecipesAdapter(recipes, this);
 
@@ -63,4 +66,25 @@ public class RecipesOverviewActivity extends AppCompatActivity implements Recipe
         intentToDetailActivity.putExtra(getString(R.string.recipe_key), clickedRecipe);
         startActivity(intentToDetailActivity);
     }
+
+
+    private class FetchRecipesTask extends AsyncTask<Void, Void, ArrayList<Recipe>> {
+
+        @Override
+        protected ArrayList<Recipe> doInBackground(Void... voids) {
+            recipes = NetworkUtils.getRecipes(RecipesOverviewActivity.this);
+            return recipes;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Recipe> recipes) {
+            super.onPostExecute(recipes);
+            Log.d("MAINN", "REC " + recipes.size());
+            RecipesAdapter adapter = new RecipesAdapter(recipes, RecipesOverviewActivity.this);
+
+            mRecipesRecyclerView.setAdapter(adapter);
+        }
+    }
+
+
 }
