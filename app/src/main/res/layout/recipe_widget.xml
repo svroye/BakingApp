@@ -1,35 +1,7 @@
-<ScrollView
+<TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:id="@+id/grid_item_ingredient">
 
-    <LinearLayout
-        android:id="@+id/widget_layout"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="@dimen/widget_margin">
-
-        <TextView
-            android:gravity="center"
-            android:id="@+id/widget_recipeName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="RECIPE NAME"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textAllCaps="true"/>
-
-        <TextView
-            android:id="@+id/widget_recipeIngredients"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:lineSpacingExtra="4dp"
-            android:textSize="14sp"
-            tools:text="EGGS\nBUTTER"/>
-
-    </LinearLayout>
-</ScrollView>
+</TextView>

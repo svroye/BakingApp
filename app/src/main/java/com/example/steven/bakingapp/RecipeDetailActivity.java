@@ -1,15 +1,17 @@
 package com.example.steven.bakingapp;
 
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import com.example.steven.bakingapp.Objects.Recipe;
-import com.example.steven.bakingapp.Widget.RecipeWidget;
+import com.google.gson.Gson;
 
 public class RecipeDetailActivity extends AppCompatActivity
         implements RecipeStepsFragment.OnListItemClickListener{
@@ -85,19 +87,30 @@ public class RecipeDetailActivity extends AppCompatActivity
             }
 
         } else {
-            recipeStepDescriptionTv.setText(savedInstanceState.getString("recipeStep"));
+            if (mTwoPane) {
+                recipeStepDescriptionTv.setText(savedInstanceState.getString("recipeStep"));
+            }
         }
 
-        updateWidget();
+        updateSharedPreferences();
+        sendBroadcast();
     }
 
-    private void updateWidget() {
+    private void sendBroadcast() {
         Intent intent = new Intent();
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        //int[] ids = AppWidgetManager.getInstance(getApplicationContext()).getAppWidgetIds(
-          //      new ComponentName(getApplicationContext(), RecipeWidget.class));
-        intent.putExtra("recipe", recipe);
         sendBroadcast(intent);
+    }
+
+    private void updateSharedPreferences() {
+        // transform the Recipe object to a String using GSon
+        Gson gson = new Gson();
+        String recipeString = gson.toJson(recipe);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("recipekey", recipeString);
+        editor.commit();
     }
 
     @Override
@@ -127,6 +140,8 @@ public class RecipeDetailActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("recipeStep", recipeStepDescriptionTv.getText().toString());
+        if (mTwoPane) {
+            outState.putString("recipeStep", recipeStepDescriptionTv.getText().toString());
+        }
     }
 }

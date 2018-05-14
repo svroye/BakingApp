@@ -1,0 +1,48 @@
+<RelativeLayout
+    android:background="@android:color/white"
+    android:id="@+id/widget_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@mipmap/ic_launcher"
+        android:scaleType="fitXY"/>
+
+    <TextView
+        android:gravity="center"
+        android:id="@+id/widget_recipeName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/widget_title_empty_state"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textAllCaps="true"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/widget_recipeName">
+
+        <ListView
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:id="@+id/widget_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/widget_empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="4dp"
+            android:textSize="14sp"
+            android:text="@string/widget_content_empty_state"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>
