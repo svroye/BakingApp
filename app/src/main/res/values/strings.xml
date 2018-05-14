@@ -17,8 +17,10 @@
 
     <string name="ingredient_quantity_measure_float">%1$.2f %2$s %3$s</string>
     <string name="ingredient_quantity_measure_int">%1$d %2$s %3$s</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
+
+    <string name="widget_title_empty_state">No recipe selected yet.</string>
+    <string name="widget_content_empty_state">Select one of the recipes in \'Baking App\' to see the
+        list of ingredients here."</string>
 
 
 </resources>
