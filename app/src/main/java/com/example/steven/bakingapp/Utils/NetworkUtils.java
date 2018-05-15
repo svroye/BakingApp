@@ -55,6 +55,7 @@ public class NetworkUtils {
                     String name = null;
                     ArrayList<Ingredient> ingredients = new ArrayList<>();
                     ArrayList<RecipeStep> steps = new ArrayList<>();
+                    String image = null;
 
                     if (recipeJsonObject.has("name")){
                         name = recipeJsonObject.getString("name");
@@ -123,7 +124,11 @@ public class NetworkUtils {
                         }
                     }
 
-                    recipesArrayList.add(new Recipe(name, ingredients, steps));
+                    if (recipeJsonObject.has("image")) {
+                        image = recipeJsonObject.getString("image");
+                    }
+
+                    recipesArrayList.add(new Recipe(name, ingredients, steps, image));
 
                 }
             } catch (JSONException e) {

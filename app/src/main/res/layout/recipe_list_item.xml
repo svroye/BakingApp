@@ -11,6 +11,11 @@
     android:layout_height="200dp"
     card_view:cardCornerRadius="4dp">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recipeListItem_recipeImage"/>
+
     <TextView
         android:id="@+id/recipeListItem_recipeNameTv"
         android:layout_width="match_parent"
@@ -19,6 +24,16 @@
         android:textAllCaps="true"
         android:textSize="24sp"
         android:gravity="center"
-        android:layout_margin="8dp"/>
+        android:layout_margin="8dp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"/>
+
+    <!--
+    Image provided are not my property and are taken from following sources
+    https://nl.pinterest.com/pin/365987907201997325/
+    https://nl.pinterest.com/pin/444871269424755436/
+    https://nl.pinterest.com/pin/319966748513071514/
+    https://nl.pinterest.com/pin/486811040943919695/
+    -->
 
 </android.support.v7.widget.CardView>
