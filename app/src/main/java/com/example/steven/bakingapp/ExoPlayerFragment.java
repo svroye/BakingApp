@@ -6,10 +6,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import com.example.steven.bakingapp.Objects.RecipeStep;
 import com.example.steven.bakingapp.Utils.ExoPlayerUtils;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.squareup.picasso.Picasso;
 
 
 /**
@@ -24,6 +26,7 @@ public class ExoPlayerFragment extends Fragment {
     // View and Player for the video
     private SimpleExoPlayerView simpleExoPlayerView;
     private SimpleExoPlayer simpleExoPlayer;
+    private ImageView imageView;
 
     // values for the video to keep track when the screen rotates
     private boolean playWhenReady = false;
@@ -32,6 +35,7 @@ public class ExoPlayerFragment extends Fragment {
 
     // value for checking tablet or phone
     private boolean isTablet;
+    private boolean isVideo;
 
     /**
      * Mandatory empty constructor
@@ -42,7 +46,7 @@ public class ExoPlayerFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_exoplayer, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_exoplayer_image, container, false);
 
         // get the RecipeStep and boolean value from the Bundle added when the fragment was created
         if (getArguments() != null){
@@ -60,42 +64,68 @@ public class ExoPlayerFragment extends Fragment {
 
         // initialize the player and set the orientation for it
         simpleExoPlayerView = rootView.findViewById(R.id.fragmentExoplayer_moviePlayer);
-        simpleExoPlayer = ExoPlayerUtils.initializePlayer(getContext(), simpleExoPlayerView,
-                playWhenReady, recipeStep.getUrlToVideo(), currentWindow, playbackPosition);
-        ExoPlayerUtils.setInitialOrientation(getContext(), getActivity(), isTablet);
+        imageView = rootView.findViewById(R.id.fragmentExoplayer_image);
+
+        String videoUrl = recipeStep.getVideoUrl();
+        String thumbnailUrl = recipeStep.getThumbnailUrl();
+
+        if (!videoUrl.equals("")){
+            isVideo = true;
+            imageView.setVisibility(View.GONE);
+
+        } else if (!thumbnailUrl.equals("")){
+            isVideo = false;
+            simpleExoPlayerView.setVisibility(View.GONE);
+            if (!thumbnailUrl.endsWith(".mp4")) {
+                Picasso.get()
+                        .load(recipeStep.getThumbnailUrl())
+                        .fit()
+                        .into(imageView);
+                } else {
+                imageView.setVisibility(View.GONE);
+            }
+        } else {
+            isVideo = false;
+            imageView.setVisibility(View.GONE);
+            simpleExoPlayerView.setVisibility(View.GONE);
+        }
+
         return rootView;
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (!getActivity().isChangingConfigurations()) {
-            simpleExoPlayer.setPlayWhenReady(false);
-        }
+        if (isVideo) ExoPlayerUtils.releasePlayer(simpleExoPlayer);
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (isVideo) ExoPlayerUtils.releasePlayer(simpleExoPlayer);
+    }
+
 
     @Override
     public void onResume() {
         super.onResume();
-        // pause the video when the activity is re-opened
-        simpleExoPlayer.setPlayWhenReady(false);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // release the resources for the video when the activity gets destroyed
-        ExoPlayerUtils.releasePlayer(simpleExoPlayer);
+        if (isVideo) {
+            simpleExoPlayer = ExoPlayerUtils.initializePlayer(getContext(), simpleExoPlayerView,
+                    playWhenReady, recipeStep.getVideoUrl(), currentWindow, playbackPosition);
+            ExoPlayerUtils.setInitialOrientation(getContext(), getActivity(), isTablet);
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         // save the variables for handling screen rotation
         super.onSaveInstanceState(outState);
-        outState.putLong("playbackPosition", simpleExoPlayer.getCurrentPosition());
-        outState.putInt("currentWindow", simpleExoPlayer.getCurrentWindowIndex());
-        outState.putBoolean("playWhenReady", simpleExoPlayer.getPlayWhenReady());
-        outState.putBoolean("isTablet", isTablet);
+        if (isVideo) {
+            outState.putLong("playbackPosition", simpleExoPlayer.getCurrentPosition());
+            outState.putInt("currentWindow", simpleExoPlayer.getCurrentWindowIndex());
+            outState.putBoolean("playWhenReady", simpleExoPlayer.getPlayWhenReady());
+            outState.putBoolean("isTablet", isTablet);
+        }
     }
 
 }

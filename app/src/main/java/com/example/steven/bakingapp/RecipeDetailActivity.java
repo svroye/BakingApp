@@ -7,9 +7,11 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.steven.bakingapp.Objects.Recipe;
+import com.example.steven.bakingapp.Objects.RecipeStep;
 import com.google.gson.Gson;
 
 /**
@@ -31,7 +33,7 @@ public class RecipeDetailActivity extends AppCompatActivity
         setContentView(R.layout.activity_recipe_detail);
 
         // check whether the tablet or phone layout was inflated
-        if (findViewById(R.id.activityRecipeDetail_detailStepFramelayout) != null) {
+        if (findViewById(R.id.activityRecipeDetail_stepInfoTextView) != null) {
             mTwoPane = true;
             recipeStepDescriptionTv = findViewById(R.id.activityRecipeDetail_stepInfoTextView);
         } else {
@@ -51,15 +53,7 @@ public class RecipeDetailActivity extends AppCompatActivity
             // get the FragmentManager
             FragmentManager fragmentManager = getSupportFragmentManager();
 
-            // create an instance of the ExoplayerFragment and add a Bundle with the
-            //  RecipeStep
-            ExoPlayerFragment exoPlayerFragment = new ExoPlayerFragment();
-            Bundle recipeIntroBundle = new Bundle();
-            recipeIntroBundle.putParcelable(getString(R.string.single_step_key),
-                    recipe.getSteps().get(0));
-            recipeIntroBundle.putBoolean("isTablet", mTwoPane);
-            exoPlayerFragment.setArguments(recipeIntroBundle);
-
+            RecipeStep introStep = recipe.getSteps().get(0);
             // create an instance of the RecipeIngredientsFragment and add a Bundle with the
             //  ingredients
             RecipeIngredientsFragment ingredientsFragment = new RecipeIngredientsFragment();
@@ -76,16 +70,26 @@ public class RecipeDetailActivity extends AppCompatActivity
 
             if (mTwoPane){
                 // tablet view
+                recipeStepDescriptionTv.setText(introStep.getFullDescription());
+            }
+
+            // create an instance of the ExoplayerFragment and add a Bundle with the
+            //  RecipeStep
+            if (introStep.hasValidVideoOrImage()) {
+                ExoPlayerFragment exoPlayerFragment = new ExoPlayerFragment();
+                Bundle recipeIntroBundle = new Bundle();
+                recipeIntroBundle.putParcelable(getString(R.string.single_step_key), introStep);
+                recipeIntroBundle.putBoolean("isTablet", mTwoPane);
+                exoPlayerFragment.setArguments(recipeIntroBundle);
                 fragmentManager.beginTransaction()
-                        .add(R.id.activityRecipeDetail_detailStepFramelayout, exoPlayerFragment)
                         .add(R.id.activityRecipeDetail_ingredientsFramelayout, ingredientsFragment)
                         .add(R.id.activityRecipeDetail_stepsFramelayout, recipeStepsFragment)
+                        .add(R.id.activityRecipeDetail_detailStepFramelayout, exoPlayerFragment)
                         .commit();
-                recipeStepDescriptionTv.setText(recipe.getSteps().get(0).getFullDescription());
+
             } else {
-                // phone view
+                findViewById(R.id.activityRecipeDetail_detailStepFramelayout).setVisibility(View.GONE);
                 fragmentManager.beginTransaction()
-                        .add(R.id.activityRecipeDetail_recipeIntroFramelayout, exoPlayerFragment)
                         .add(R.id.activityRecipeDetail_ingredientsFramelayout, ingredientsFragment)
                         .add(R.id.activityRecipeDetail_stepsFramelayout, recipeStepsFragment)
                         .commit();

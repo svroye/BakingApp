@@ -75,8 +75,6 @@ public class ExoPlayerUtils {
         if (context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
                 && !isTablet) {
             hideSystemUI(activity);
-        } else {
-
         }
     }
 

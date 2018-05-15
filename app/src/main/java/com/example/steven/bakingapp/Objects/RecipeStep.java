@@ -57,6 +57,19 @@ public class RecipeStep implements Parcelable {
         return videoUrl;
     }
 
+    public boolean hasValidVideoOrImage(){
+        if (!videoUrl.equals("")){
+            if (videoUrl.endsWith(".mp4")) {
+                return true;
+            }
+        } else if (!thumbnailUrl.equals("")){
+            if (!thumbnailUrl.endsWith(".mp4")){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     public String getThumbnailUrl() {
         return thumbnailUrl;
@@ -65,17 +78,6 @@ public class RecipeStep implements Parcelable {
     public int getId() {
         return id;
     }
-
-    public String getUrlToVideo(){
-        if (!videoUrl.equals("")){
-            return videoUrl;
-        } else if (!thumbnailUrl.equals("")){
-            return thumbnailUrl;
-        } else {
-            return null;
-        }
-    }
-
 
     @Override
     public int describeContents() {
